@@ -1,0 +1,2499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Trends Tracker - US News &amp; Politics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  /* RGB versions for opacity control */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  /* Background color tokens (Light Mode) */
+  --color-bg-1: rgba(59, 130, 246, 0.08); /* Light blue */
+  --color-bg-2: rgba(245, 158, 11, 0.08); /* Light yellow */
+  --color-bg-3: rgba(34, 197, 94, 0.08); /* Light green */
+  --color-bg-4: rgba(239, 68, 68, 0.08); /* Light red */
+  --color-bg-5: rgba(147, 51, 234, 0.08); /* Light purple */
+  --color-bg-6: rgba(249, 115, 22, 0.08); /* Light orange */
+  --color-bg-7: rgba(236, 72, 153, 0.08); /* Light pink */
+  --color-bg-8: rgba(6, 182, 212, 0.08); /* Light cyan */
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  /* Common style patterns */
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+  --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+  /* RGB versions for opacity control */
+  --color-success-rgb: 33, 128, 141;
+  --color-error-rgb: 192, 21, 47;
+  --color-warning-rgb: 168, 75, 47;
+  --color-info-rgb: 98, 108, 113;
+
+  /* Typography */
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+
+  /* Political theme colors */
+  --color-political-blue: #3b82f6;
+  --color-political-red: #dc2626;
+  --color-positive-green: #22c55e;
+  --color-negative-red: #ef4444;
+  --color-neutral-gray: #6b7280;
+}
+
+/* Dark mode colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* RGB versions for opacity control (Dark Mode) */
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    /* Background color tokens (Dark Mode) */
+    --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
+    --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
+    --color-bg-3: rgba(21, 128, 61, 0.15); /* Dark green */
+    --color-bg-4: rgba(185, 28, 28, 0.15); /* Dark red */
+    --color-bg-5: rgba(107, 33, 168, 0.15); /* Dark purple */
+    --color-bg-6: rgba(194, 65, 12, 0.15); /* Dark orange */
+    --color-bg-7: rgba(190, 24, 93, 0.15); /* Dark pink */
+    --color-bg-8: rgba(8, 145, 178, 0.15); /* Dark cyan */
+
+    /* Semantic Color Tokens (Dark Mode) */
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    --button-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+    /* Common style patterns - updated for dark mode */
+    --focus-ring: 0 0 0 3px var(--color-focus-ring);
+    --focus-outline: 2px solid var(--color-primary);
+    --status-bg-opacity: 0.15;
+    --status-border-opacity: 0.25;
+    --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    /* RGB versions for dark mode */
+    --color-success-rgb: var(--color-teal-300-rgb);
+    --color-error-rgb: var(--color-red-400-rgb);
+    --color-warning-rgb: var(--color-orange-400-rgb);
+    --color-info-rgb: var(--color-gray-300-rgb);
+  }
+}
+
+/* Data attribute for manual theme switching */
+[data-color-scheme="dark"] {
+  /* RGB versions for opacity control (dark mode) */
+  --color-gray-400-rgb: 119, 124, 124;
+  --color-teal-300-rgb: 50, 184, 198;
+  --color-gray-300-rgb: 167, 169, 169;
+  --color-gray-200-rgb: 245, 245, 245;
+
+  /* Colorful background palette - Dark Mode */
+  --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
+  --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
+  --color-bg-3: rgba(21, 128, 61, 0.15); /* Dark green */
+  --color-bg-4: rgba(185, 28, 28, 0.15); /* Dark red */
+  --color-bg-5: rgba(107, 33, 168, 0.15); /* Dark purple */
+  --color-bg-6: rgba(194, 65, 12, 0.15); /* Dark orange */
+  --color-bg-7: rgba(190, 24, 93, 0.15); /* Dark pink */
+  --color-bg-8: rgba(8, 145, 178, 0.15); /* Dark cyan */
+
+  /* Semantic Color Tokens (Dark Mode) */
+  --color-background: var(--color-charcoal-700);
+  --color-surface: var(--color-charcoal-800);
+  --color-text: var(--color-gray-200);
+  --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+  --color-primary: var(--color-teal-300);
+  --color-primary-hover: var(--color-teal-400);
+  --color-primary-active: var(--color-teal-800);
+  --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+  --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+  --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+  --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+  --color-error: var(--color-red-400);
+  --color-success: var(--color-teal-300);
+  --color-warning: var(--color-orange-400);
+  --color-info: var(--color-gray-300);
+  --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+  --color-btn-primary-text: var(--color-slate-900);
+  --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
+  --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+  --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+  /* Common style patterns - updated for dark mode */
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+  --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+  /* RGB versions for dark mode */
+  --color-success-rgb: var(--color-teal-300-rgb);
+  --color-error-rgb: var(--color-red-400-rgb);
+  --color-warning-rgb: var(--color-orange-400-rgb);
+  --color-info-rgb: var(--color-gray-300-rgb);
+}
+
+[data-color-scheme="light"] {
+  /* RGB versions for opacity control (light mode) */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+
+  /* RGB versions for light mode */
+  --color-success-rgb: var(--color-teal-500-rgb);
+  --color-error-rgb: var(--color-red-500-rgb);
+  --color-warning-rgb: var(--color-orange-500-rgb);
+  --color-info-rgb: var(--color-slate-500-rgb);
+}
+
+/* Base styles */
+html {
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+h2 {
+  font-size: var(--font-size-3xl);
+}
+h3 {
+  font-size: var(--font-size-2xl);
+}
+h4 {
+  font-size: var(--font-size-xl);
+}
+h5 {
+  font-size: var(--font-size-lg);
+}
+h6 {
+  font-size: var(--font-size-md);
+}
+
+p {
+  margin: 0 0 var(--space-16) 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+code,
+pre {
+  font-family: var(--font-family-mono);
+  font-size: calc(var(--font-size-base) * 0.95);
+  background-color: var(--color-secondary);
+  border-radius: var(--radius-sm);
+}
+
+code {
+  padding: var(--space-1) var(--space-4);
+}
+
+pre {
+  padding: var(--space-16);
+  margin: var(--space-16) 0;
+  overflow: auto;
+  border: 1px solid var(--color-border);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-standard);
+  border: none;
+  text-decoration: none;
+  position: relative;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn--primary:active {
+  background: var(--color-primary-active);
+}
+
+.btn--secondary {
+  background: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover {
+  background: var(--color-secondary-hover);
+}
+
+.btn--secondary:active {
+  background: var(--color-secondary-active);
+}
+
+.btn--outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.btn--outline:hover {
+  background: var(--color-secondary);
+}
+
+.btn--sm {
+  padding: var(--space-4) var(--space-12);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+}
+
+.btn--lg {
+  padding: var(--space-10) var(--space-20);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-md);
+}
+
+.btn--full-width {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form elements */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+textarea.form-control {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+}
+
+select.form-control {
+  padding: var(--space-8) var(--space-12);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: var(--select-caret-light);
+  background-repeat: no-repeat;
+  background-position: right var(--space-12) center;
+  background-size: 16px;
+  padding-right: var(--space-32);
+}
+
+/* Add a dark mode specific caret */
+@media (prefers-color-scheme: dark) {
+  select.form-control {
+    background-image: var(--select-caret-dark);
+  }
+}
+
+/* Also handle data-color-scheme */
+[data-color-scheme="dark"] select.form-control {
+  background-image: var(--select-caret-dark);
+}
+
+[data-color-scheme="light"] select.form-control {
+  background-image: var(--select-caret-light);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  outline: var(--focus-outline);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.form-group {
+  margin-bottom: var(--space-16);
+}
+
+/* Card component */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--duration-normal) var(--ease-standard);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card__body {
+  padding: var(--space-16);
+}
+
+.card__header,
+.card__footer {
+  padding: var(--space-16);
+  border-bottom: 1px solid var(--color-card-border-inner);
+}
+
+/* Status indicators - simplified with CSS variables */
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-6) var(--space-12);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.status--success {
+  background-color: rgba(
+    var(--color-success-rgb, 33, 128, 141),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-success);
+  border: 1px solid
+    rgba(var(--color-success-rgb, 33, 128, 141), var(--status-border-opacity));
+}
+
+.status--error {
+  background-color: rgba(
+    var(--color-error-rgb, 192, 21, 47),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-error);
+  border: 1px solid
+    rgba(var(--color-error-rgb, 192, 21, 47), var(--status-border-opacity));
+}
+
+.status--warning {
+  background-color: rgba(
+    var(--color-warning-rgb, 168, 75, 47),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-warning);
+  border: 1px solid
+    rgba(var(--color-warning-rgb, 168, 75, 47), var(--status-border-opacity));
+}
+
+.status--info {
+  background-color: rgba(
+    var(--color-info-rgb, 98, 108, 113),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-info);
+  border: 1px solid
+    rgba(var(--color-info-rgb, 98, 108, 113), var(--status-border-opacity));
+}
+
+/* Container layout */
+.container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: var(--space-16);
+  padding-left: var(--space-16);
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: var(--container-sm);
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--container-md);
+  }
+}
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--container-lg);
+  }
+}
+@media (min-width: 1280px) {
+  .container {
+    max-width: var(--container-xl);
+  }
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-4 {
+  gap: var(--space-4);
+}
+.gap-8 {
+  gap: var(--space-8);
+}
+.gap-16 {
+  gap: var(--space-16);
+}
+
+.m-0 {
+  margin: 0;
+}
+.mt-8 {
+  margin-top: var(--space-8);
+}
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+.mx-8 {
+  margin-left: var(--space-8);
+  margin-right: var(--space-8);
+}
+.my-8 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.p-0 {
+  padding: 0;
+}
+.py-8 {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+.px-8 {
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+}
+.py-16 {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+.px-16 {
+  padding-left: var(--space-16);
+  padding-right: var(--space-16);
+}
+
+.block {
+  display: block;
+}
+.hidden {
+  display: none;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+}
+
+/* Dark mode specifics */
+[data-color-scheme="dark"] .btn--outline {
+  border: 1px solid var(--color-border-secondary);
+}
+
+@font-face {
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+    format('woff2');
+}
+
+/* Custom styles for Political Trends Tracker */
+.main-layout {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+}
+
+.header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-16) var(--space-24);
+    position: relative;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+}
+
+.header-title h1 {
+    color: var(--color-political-blue);
+    margin: 0;
+}
+
+.demo-badge {
+    background: var(--color-bg-2);
+    color: var(--color-warning);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    cursor: help;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+}
+
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: var(--space-8);
+    border-radius: var(--radius-base);
+    cursor: pointer;
+    font-size: var(--font-size-lg);
+    transition: all var(--duration-fast);
+}
+
+.theme-toggle:hover {
+    background: var(--color-secondary);
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--space-24);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-24);
+    height: calc(100vh - 100px);
+}
+
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-20);
+    overflow: hidden;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    overflow-y: auto;
+}
+
+.controls-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+}
+
+.controls-section h3 {
+    margin-bottom: var(--space-12);
+    color: var(--color-text);
+    font-size: var(--font-size-lg);
+}
+
+.filter-controls {
+    display: flex;
+    gap: var(--space-12);
+    margin-bottom: var(--space-16);
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-16);
+    overflow-y: auto;
+    padding-right: var(--space-8);
+}
+
+.trend-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+    transition: all var(--duration-normal);
+    cursor: pointer;
+    position: relative;
+}
+
+.trend-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.trend-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-12);
+}
+
+.trend-topic {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--line-height-tight);
+}
+
+.trend-category {
+    background: var(--color-bg-1);
+    color: var(--color-political-blue);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+}
+
+.hashtag {
+    background: var(--color-secondary);
+    color: var(--color-text-secondary);
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    text-decoration: none;
+    transition: all var(--duration-fast);
+}
+
+.hashtag:hover {
+    background: var(--color-primary);
+    color: var(--color-btn-primary-text);
+}
+
+.trend-metrics {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-12);
+}
+
+.trend-score {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.score-bar {
+    width: 80px;
+    height: 6px;
+    background: var(--color-secondary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.score-fill {
+    height: 100%;
+    background: var(--color-primary);
+    transition: width var(--duration-normal);
+}
+
+.sentiment-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.sentiment-positive {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--color-positive-green);
+}
+
+.sentiment-negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-negative-red);
+}
+
+.sentiment-neutral {
+    background: rgba(107, 114, 128, 0.15);
+    color: var(--color-neutral-gray);
+}
+
+.trend-context {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--space-12);
+}
+
+.trend-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trend-time {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.timeline-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+    height: 400px;
+    overflow-y: auto;
+}
+
+.timeline {
+    position: relative;
+    padding-left: var(--space-20);
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: var(--space-8);
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: var(--space-16);
+    padding-left: var(--space-12);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: var(--space-4);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-surface);
+}
+
+.timeline-content {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    padding: var(--space-10);
+}
+
+.timeline-topic {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+}
+
+.timeline-duration {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.duration-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--color-secondary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.duration-fill {
+    height: 100%;
+    background: var(--color-success);
+    transition: width var(--duration-normal);
+}
+
+.alerts-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+    height: 300px;
+    overflow-y: auto;
+}
+
+.alerts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-12);
+}
+
+.alert-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-8);
+    border-radius: var(--radius-base);
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--space-8);
+    font-size: var(--font-size-sm);
+}
+
+.alert-topic {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+}
+
+.alert-time {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-24);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-16);
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modal-title {
+    margin: 0;
+    color: var(--color-text);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    padding: var(--space-4);
+    border-radius: var(--radius-base);
+    transition: all var(--duration-fast);
+}
+
+.close-btn:hover {
+    background: var(--color-secondary);
+    color: var(--color-text);
+}
+
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: var(--color-surface);
+    border-left: 1px solid var(--color-border);
+    padding: var(--space-24);
+    overflow-y: auto;
+    transition: right var(--duration-normal) var(--ease-standard);
+    z-index: 999;
+}
+
+.settings-panel.active {
+    right: 0;
+}
+
+.settings-section {
+    margin-bottom: var(--space-24);
+    padding-bottom: var(--space-16);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+}
+
+.settings-section h3 {
+    margin-bottom: var(--space-12);
+    color: var(--color-text);
+}
+
+.slider-container {
+    margin: var(--space-12) 0;
+}
+
+.slider {
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-sm);
+    background: var(--color-secondary);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    border: none;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.sentiment-view {
+    display: none;
+    padding: var(--space-24);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.sentiment-view.active {
+    display: block;
+}
+
+.sentiment-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-24);
+    margin-bottom: var(--space-24);
+}
+
+.sentiment-gauge {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-20);
+    text-align: center;
+}
+
+.sentiment-breakdown {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-20);
+}
+
+.chart-container {
+    height: 400px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+    margin-bottom: var(--space-16);
+}
+
+.chart-container canvas {
+    max-height: 100%;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-20);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.nav-tab {
+    padding: var(--space-10) var(--space-16);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.nav-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.nav-tab:hover:not(.active) {
+    color: var(--color-text);
+}
+
+.info-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.info-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-charcoal-800);
+    color: var(--color-white);
+    padding: var(--space-8) var(--space-12);
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: var(--space-16);
+        height: auto;
+    }
+    
+    .trend-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sentiment-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .settings-panel {
+        width: 100vw;
+        right: -100vw;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: var(--space-12);
+        align-items: flex-start;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-32);
+    color: var(--color-text-secondary);
+}
+
+.loading::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-secondary);
+    border-top: 2px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: var(--space-8);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* END PERPLEXITY DESIGN SYSTEM */
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>Political Trends Tracker</h1>
+                    <span class="demo-badge info-tooltip" data-tooltip="X API trends endpoints are deprecated for non-Enterprise users. This is a demonstration using mock data.">
+                        📊 Demo Mode
+                    </span>
+                    <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">US News &amp; Politics Monitoring Dashboard</p>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+                    <button class="btn btn--outline btn--sm" onclick="openSettings()">⚙️ Settings</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Navigation Tabs -->
+            <div class="container">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="showView('dashboard')">Dashboard</button>
+                    <button class="nav-tab" onclick="showView('sentiment')">Sentiment Analysis</button>
+                    <button class="nav-tab" onclick="showView('alerts')">Email Alerts</button>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <div class="dashboard">
+                    <div class="main-panel">
+                        <div class="controls-section">
+                            <h3>Trend Filters &amp; Search</h3>
+                            <div class="filter-controls">
+                                <input type="text" class="form-control search-input" placeholder="Search trends..." id="searchInput" oninput="filterTrends()">
+                                <select class="form-control" id="categoryFilter" onchange="filterTrends()">
+                                    <option value="all">All Categories</option>
+                                    <option value="Elections">Elections</option>
+                                    <option value="Government">Government</option>
+                                    <option value="Policy">Policy</option>
+                                    <option value="Congress">Congress</option>
+                                    <option value="White House">White House</option>
+                                </select>
+                                <select class="form-control" id="sortBy" onchange="sortTrends()">
+                                    <option value="score">Sort by Trend Score</option>
+                                    <option value="time">Sort by Time</option>
+                                    <option value="sentiment">Sort by Sentiment</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="trend-grid" id="trendsContainer">
+                            <!-- Trends will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="sidebar">
+                        <div class="timeline-section">
+                            <h3>Trend Timeline</h3>
+                            <div class="timeline" id="timelineContainer">
+                                <!-- Timeline items will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="alerts-section">
+                            <div class="alerts-header">
+                                <h3>Recent Alerts</h3>
+                                <span class="status status--info">Demo</span>
+                            </div>
+                            <div id="alertsContainer">
+                                <!-- Alert items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sentiment Analysis View -->
+            <div id="sentiment-view" class="sentiment-view">
+                <div class="sentiment-overview">
+                    <div class="sentiment-gauge">
+                        <h3>Overall Political Sentiment</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="sentimentGauge"></canvas>
+                        </div>
+                    </div>
+                    <div class="sentiment-breakdown">
+                        <h3>Sentiment by Category</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="sentimentBreakdown"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>Sentiment Trends Over Time</h3>
+                    <canvas id="sentimentTrend"></canvas>
+                </div>
+            </div>
+
+            <!-- Email Alerts Configuration View -->
+            <div id="alerts-view" class="view" style="display: none; padding: var(--space-24); max-width: 1400px; margin: 0 auto;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24);">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Alert Configuration</h3>
+                            <div class="form-group">
+                                <label class="form-label" for="alertEmail">Email Address</label>
+                                <input type="email" class="form-control" id="alertEmail" value="doterra2livewell@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="trendThreshold">Minimum Trend Score: <span id="thresholdValue">8000</span></label>
+                                <input type="range" class="slider" id="trendThreshold" min="1000" max="20000" value="8000" oninput="updateThreshold()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="alertFrequency">Notification Frequency</label>
+                                <select class="form-control" id="alertFrequency">
+                                    <option value="immediate">Immediate</option>
+                                    <option value="hourly">Hourly Summary</option>
+                                    <option value="daily">Daily Summary</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Alert Categories</label>
+                                <div class="checkbox-group" id="alertCategories">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="cat-elections" checked>
+                                        <label for="cat-elections">Elections</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="cat-government" checked>
+                                        <label for="cat-government">Government</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="cat-policy" checked>
+                                        <label for="cat-policy">Policy</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="cat-congress" checked>
+                                        <label for="cat-congress">Congress</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="cat-whitehouse" checked>
+                                        <label for="cat-whitehouse">White House</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn--primary" onclick="testEmailAlert()">Send Test Email</button>
+                            <button class="btn btn--secondary" onclick="saveAlertSettings()">Save Settings</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Alert History</h3>
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-16);">⚠️ This is a demo. In production, these alerts would be sent via email.</p>
+                            <div id="alertHistoryContainer" style="max-height: 400px; overflow-y: auto;">
+                                <!-- Alert history will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Trend Details Modal -->
+    <div class="modal" id="trendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Trend Details</h2>
+                <button class="close-btn" onclick="closeTrendModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Modal content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="modal-header">
+            <h2 class="modal-title">Settings</h2>
+            <button class="close-btn" onclick="closeSettings()">&times;</button>
+        </div>
+        
+        <div class="settings-section">
+            <h3>API Configuration</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-12);">⚠️ X API trends endpoints are deprecated for non-Enterprise users.</p>
+            <div class="form-group">
+                <label class="form-label">Bearer Token</label>
+                <input type="password" class="form-control" placeholder="Enter your X API Bearer Token">
+            </div>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Alternative solutions: Third-party APIs, web scraping, manual data import. <a href="https://developer.x.com" target="_blank">Visit X Developer Portal</a></p>
+        </div>
+
+        <div class="settings-section">
+            <h3>Data Management</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-8);">
+                <button class="btn btn--outline" onclick="exportData()">📊 Export All Data</button>
+                <label class="btn btn--outline" for="importFile">📁 Import Data
+                    <input type="file" id="importFile" accept=".json,.csv" style="display: none;" onchange="importData(this)">
+                </label>
+                <button class="btn btn--outline" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>GitHub Integration</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-12);">Export your code for GitHub integration via BuildShip or manual deployment.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-8);">
+                <button class="btn btn--outline" onclick="exportCode()">💻 Export Code Files</button>
+                <a href="https://buildship.com" target="_blank" class="btn btn--outline" style="text-align: center;">🚀 BuildShip Integration Guide</a>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Manual Trend Entry</h3>
+            <div class="form-group">
+                <label class="form-label">Topic Name</label>
+                <input type="text" class="form-control" id="manualTopic" placeholder="Enter trend topic">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hashtags (comma-separated)</label>
+                <input type="text" class="form-control" id="manualHashtags" placeholder="#hashtag1, #hashtag2">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Trend Score</label>
+                <input type="number" class="form-control" id="manualScore" placeholder="Enter score (1000-20000)" min="1000" max="20000">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-control" id="manualCategory">
+                    <option value="Elections">Elections</option>
+                    <option value="Government">Government</option>
+                    <option value="Policy">Policy</option>
+                    <option value="Congress">Congress</option>
+                    <option value="White House">White House</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Context Description</label>
+                <textarea class="form-control" id="manualContext" placeholder="Brief description of the trend" rows="3"></textarea>
+            </div>
+            <button class="btn btn--primary" onclick="addManualTrend()">Add Trend</button>
+        </div>
+    </div>
+
+    <script>
+        // Mock data and application state
+        const mockTrends = [
+            {
+                id: 1,
+                topic: "Congressional Hearing",
+                hashtags: ["#CongressionalHearing", "#Capitol", "#Testimony"],
+                timestamp: "2025-10-17T15:30:00Z",
+                trend_score: 8750,
+                sentiment: 0.15,
+                sentiment_label: "Slightly Positive",
+                duration_minutes: 245,
+                context: "Major congressional hearing regarding budget negotiations draws national attention with bipartisan testimony",
+                category: "Government"
+            },
+            {
+                id: 2,
+                topic: "Election Reform Bill",
+                hashtags: ["#ElectionReform", "#VotingRights", "#HR2025"],
+                timestamp: "2025-10-17T12:15:00Z",
+                trend_score: 12300,
+                sentiment: -0.25,
+                sentiment_label: "Slightly Negative",
+                duration_minutes: 420,
+                context: "Debate intensifies over proposed election reform legislation with partisan divisions on voting access provisions",
+                category: "Elections"
+            },
+            {
+                id: 3,
+                topic: "Supreme Court Decision",
+                hashtags: ["#SCOTUS", "#SupremeCourt", "#CourtRuling"],
+                timestamp: "2025-10-17T10:00:00Z",
+                trend_score: 15670,
+                sentiment: -0.42,
+                sentiment_label: "Negative",
+                context: "Supreme Court issues major ruling on federal regulatory authority sparking widespread political reactions",
+                duration_minutes: 480,
+                category: "Policy"
+            },
+            {
+                id: 4,
+                topic: "Presidential Executive Order",
+                hashtags: ["#ExecutiveOrder", "#POTUS", "#WhiteHouse"],
+                timestamp: "2025-10-17T08:45:00Z",
+                trend_score: 9820,
+                sentiment: 0.38,
+                sentiment_label: "Positive",
+                duration_minutes: 315,
+                context: "President signs executive order addressing climate policy and infrastructure development initiatives",
+                category: "White House"
+            },
+            {
+                id: 5,
+                topic: "Senate Filibuster Debate",
+                hashtags: ["#Filibuster", "#SenateRules", "#Congress"],
+                timestamp: "2025-10-17T06:20:00Z",
+                trend_score: 7450,
+                sentiment: -0.18,
+                sentiment_label: "Slightly Negative",
+                duration_minutes: 560,
+                context: "Renewed discussion on filibuster rules as senators debate procedural changes for legislative efficiency",
+                category: "Congress"
+            }
+        ];
+
+        let appState = {
+            trends: [...mockTrends],
+            alerts: [],
+            theme: 'light',
+            currentView: 'dashboard',
+            filterCategory: 'all',
+            searchQuery: '',
+            sortBy: 'score'
+        };
+
+        // Initialize application
+        function initApp() {
+            loadDataFromStorage();
+            renderTrends();
+            renderTimeline();
+            renderAlerts();
+            initCharts();
+            
+            // Simulate real-time updates
+            setInterval(simulateRealTimeUpdate, 900000); // 15 minutes
+            
+            // Set up keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+        }
+
+        // Data persistence
+        function saveDataToStorage() {
+            const data = {
+                trends: appState.trends,
+                alerts: appState.alerts,
+                theme: appState.theme,
+                timestamp: new Date().toISOString()
+            };
+            // Note: Using variables instead of localStorage due to sandboxed environment
+            window.persistentData = data;
+        }
+
+        function loadDataFromStorage() {
+            if (window.persistentData) {
+                const data = window.persistentData;
+                appState.trends = data.trends || [...mockTrends];
+                appState.alerts = data.alerts || [];
+                appState.theme = data.theme || 'light';
+                
+                // Apply theme
+                if (appState.theme === 'dark') {
+                    document.documentElement.setAttribute('data-color-scheme', 'dark');
+                }
+            }
+        }
+
+        // Theme management
+        function toggleTheme() {
+            appState.theme = appState.theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-color-scheme', appState.theme);
+            saveDataToStorage();
+            
+            // Update charts for theme change
+            setTimeout(initCharts, 100);
+        }
+
+        // View management
+        function showView(viewName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update views
+            document.querySelectorAll('.view, .sentiment-view').forEach(view => {
+                view.style.display = 'none';
+                view.classList.remove('active');
+            });
+            
+            const targetView = document.getElementById(viewName === 'dashboard' ? 'dashboard-view' : 
+                                                    viewName === 'sentiment' ? 'sentiment-view' : 
+                                                    'alerts-view');
+            if (targetView) {
+                targetView.style.display = viewName === 'sentiment' ? 'block' : 'flex';
+                targetView.classList.add('active');
+            }
+            
+            appState.currentView = viewName;
+            
+            // Initialize charts if switching to sentiment view
+            if (viewName === 'sentiment') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        // Trend rendering
+        function renderTrends() {
+            const container = document.getElementById('trendsContainer');
+            const filteredTrends = getFilteredTrends();
+            
+            if (filteredTrends.length === 0) {
+                container.innerHTML = '<div class="loading">No trends match your filters</div>';
+                return;
+            }
+            
+            container.innerHTML = filteredTrends.map(trend => createTrendCard(trend)).join('');
+        }
+
+        function getFilteredTrends() {
+            let filtered = [...appState.trends];
+            
+            // Filter by category
+            if (appState.filterCategory !== 'all') {
+                filtered = filtered.filter(trend => trend.category === appState.filterCategory);
+            }
+            
+            // Filter by search query
+            if (appState.searchQuery) {
+                const query = appState.searchQuery.toLowerCase();
+                filtered = filtered.filter(trend => 
+                    trend.topic.toLowerCase().includes(query) ||
+                    trend.context.toLowerCase().includes(query) ||
+                    trend.hashtags.some(tag => tag.toLowerCase().includes(query))
+                );
+            }
+            
+            // Sort
+            filtered.sort((a, b) => {
+                switch (appState.sortBy) {
+                    case 'time':
+                        return new Date(b.timestamp) - new Date(a.timestamp);
+                    case 'sentiment':
+                        return b.sentiment - a.sentiment;
+                    default:
+                        return b.trend_score - a.trend_score;
+                }
+            });
+            
+            return filtered;
+        }
+
+        function createTrendCard(trend) {
+            const timeAgo = getTimeAgo(trend.timestamp);
+            const scorePercentage = Math.min((trend.trend_score / 20000) * 100, 100);
+            const sentimentClass = getSentimentClass(trend.sentiment);
+            const durationHours = Math.floor(trend.duration_minutes / 60);
+            const durationMinutes = trend.duration_minutes % 60;
+            
+            return `
+                <div class="trend-card fade-in" onclick="openTrendModal(${trend.id})">
+                    <div class="trend-card-header">
+                        <h4 class="trend-topic">${trend.topic}</h4>
+                        <span class="trend-category">${trend.category}</span>
+                    </div>
+                    
+                    <div class="hashtags">
+                        ${trend.hashtags.map(tag => `<a href="#" class="hashtag" onclick="event.stopPropagation(); searchHashtag('${tag}')">${tag}</a>`).join('')}
+                    </div>
+                    
+                    <div class="trend-metrics">
+                        <div class="trend-score">
+                            <span>Score: ${trend.trend_score.toLocaleString()}</span>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${scorePercentage}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="sentiment-indicator ${sentimentClass}">
+                            ${getSentimentIcon(trend.sentiment)} ${trend.sentiment_label}
+                        </div>
+                    </div>
+                    
+                    <p class="trend-context">${trend.context}</p>
+                    
+                    <div class="trend-footer">
+                        <span class="trend-time">${timeAgo} • Active ${durationHours}h ${durationMinutes}m</span>
+                        <button class="btn btn--sm btn--outline" onclick="event.stopPropagation(); openTrendModal(${trend.id})">View Details</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getSentimentClass(sentiment) {
+            if (sentiment > 0.1) return 'sentiment-positive';
+            if (sentiment < -0.1) return 'sentiment-negative';
+            return 'sentiment-neutral';
+        }
+
+        function getSentimentIcon(sentiment) {
+            if (sentiment > 0.1) return '📈';
+            if (sentiment < -0.1) return '📉';
+            return '➡️';
+        }
+
+        function getTimeAgo(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diffMinutes = Math.floor((now - time) / (1000 * 60));
+            
+            if (diffMinutes < 60) return `${diffMinutes}m ago`;
+            if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
+            return `${Math.floor(diffMinutes / 1440)}d ago`;
+        }
+
+        // Timeline rendering
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            const sortedTrends = [...appState.trends].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            container.innerHTML = sortedTrends.map(trend => {
+                const timeAgo = getTimeAgo(trend.timestamp);
+                const maxDuration = Math.max(...appState.trends.map(t => t.duration_minutes));
+                const durationPercentage = (trend.duration_minutes / maxDuration) * 100;
+                
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-topic">${trend.topic}</div>
+                            <div class="timeline-duration">
+                                <span>${timeAgo}</span>
+                                <div class="duration-bar">
+                                    <div class="duration-fill" style="width: ${durationPercentage}%"></div>
+                                </div>
+                                <span class="status ${trend.duration_minutes > 300 ? 'status--success' : 'status--warning'}">
+                                    ${trend.duration_minutes > 300 ? 'Active' : 'New'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Alert management
+        function renderAlerts() {
+            const container = document.getElementById('alertsContainer');
+            
+            if (appState.alerts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: var(--space-16);">No alerts generated yet</div>';
+                return;
+            }
+            
+            container.innerHTML = appState.alerts.map(alert => `
+                <div class="alert-item">
+                    <div>
+                        <div class="alert-topic">${alert.topic}</div>
+                        <div class="alert-time">${getTimeAgo(alert.timestamp)}</div>
+                    </div>
+                    <span class="status status--info">Demo</span>
+                </div>
+            `).join('');
+        }
+
+        function renderAlertHistory() {
+            const container = document.getElementById('alertHistoryContainer');
+            
+            if (appState.alerts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--color-text-secondary); padding: var(--space-16);">No alert history available</div>';
+                return;
+            }
+            
+            container.innerHTML = appState.alerts.map(alert => `
+                <div class="card" style="margin-bottom: var(--space-12);">
+                    <div class="card__body" style="padding: var(--space-12);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-8);">
+                            <strong>${alert.topic}</strong>
+                            <span class="status status--success">Would Send</span>
+                        </div>
+                        <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                            Score: ${alert.score} • ${getTimeAgo(alert.timestamp)}
+                        </p>
+                        <div style="margin-top: var(--space-8); font-size: var(--font-size-sm);">📧 → ${alert.email}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal management
+        function openTrendModal(trendId) {
+            const trend = appState.trends.find(t => t.id === trendId);
+            if (!trend) return;
+            
+            const modal = document.getElementById('trendModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            
+            title.textContent = trend.topic;
+            
+            const relatedTrends = appState.trends
+                .filter(t => t.id !== trendId && t.category === trend.category)
+                .slice(0, 3);
+            
+            body.innerHTML = `
+                <div style="margin-bottom: var(--space-16);">
+                    <div style="display: flex; align-items: center; gap: var(--space-8); margin-bottom: var(--space-12);">
+                        <span class="trend-category">${trend.category}</span>
+                        <div class="sentiment-indicator ${getSentimentClass(trend.sentiment)}">
+                            ${getSentimentIcon(trend.sentiment)} ${trend.sentiment_label}
+                        </div>
+                    </div>
+                    
+                    <div class="hashtags" style="margin-bottom: var(--space-16);">
+                        ${trend.hashtags.map(tag => `<span class="hashtag">${tag}</span>`).join('')}
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16); margin-bottom: var(--space-16);">
+                        <div>
+                            <strong>Trend Score:</strong> ${trend.trend_score.toLocaleString()}
+                        </div>
+                        <div>
+                            <strong>Active Duration:</strong> ${Math.floor(trend.duration_minutes / 60)}h ${trend.duration_minutes % 60}m
+                        </div>
+                        <div>
+                            <strong>Detected:</strong> ${new Date(trend.timestamp).toLocaleString()}
+                        </div>
+                        <div>
+                            <strong>Sentiment Score:</strong> ${trend.sentiment.toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: var(--space-16);">
+                    <h4>Context Summary</h4>
+                    <p>${trend.context}</p>
+                </div>
+                
+                <div style="margin-bottom: var(--space-16);">
+                    <h4>Sample Tweets</h4>
+                    <div style="background: var(--color-bg-1); padding: var(--space-12); border-radius: var(--radius-base); color: var(--color-text-secondary);">
+                        ⚠️ Sample tweet data would appear here in a production environment with full X API access. This demo shows the interface structure.
+                    </div>
+                </div>
+                
+                ${relatedTrends.length > 0 ? `
+                    <div>
+                        <h4>Related Trends</h4>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-8);">
+                            ${relatedTrends.map(related => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-8); background: var(--color-bg-2); border-radius: var(--radius-base);">
+                                    <span>${related.topic}</span>
+                                    <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Score: ${related.trend_score.toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="margin-top: var(--space-20); display: flex; gap: var(--space-12);">
+                    <button class="btn btn--primary" onclick="exportTrendData(${trendId})">📊 Export Trend Data</button>
+                    <button class="btn btn--outline" onclick="closeTrendModal()">Close</button>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeTrendModal() {
+            document.getElementById('trendModal').classList.remove('active');
+        }
+
+        // Settings management
+        function openSettings() {
+            document.getElementById('settingsPanel').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsPanel').classList.remove('active');
+        }
+
+        // Filtering and sorting
+        function filterTrends() {
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            
+            appState.searchQuery = searchInput.value;
+            appState.filterCategory = categoryFilter.value;
+            
+            renderTrends();
+        }
+
+        function sortTrends() {
+            const sortSelect = document.getElementById('sortBy');
+            appState.sortBy = sortSelect.value;
+            renderTrends();
+        }
+
+        function searchHashtag(hashtag) {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = hashtag;
+            appState.searchQuery = hashtag;
+            renderTrends();
+        }
+
+        // Chart initialization
+        function initCharts() {
+            if (appState.currentView !== 'sentiment' && appState.currentView !== 'dashboard') return;
+            
+            const isDark = appState.theme === 'dark';
+            const textColor = isDark ? '#f5f5f5' : '#134252';
+            const gridColor = isDark ? 'rgba(119, 124, 124, 0.3)' : 'rgba(94, 82, 64, 0.2)';
+            
+            // Sentiment gauge
+            const sentimentGaugeCtx = document.getElementById('sentimentGauge');
+            if (sentimentGaugeCtx) {
+                new Chart(sentimentGaugeCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Positive', 'Neutral', 'Negative'],
+                        datasets: [{
+                            data: [35, 30, 35],
+                            backgroundColor: ['#22c55e', '#6b7280', '#ef4444'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: textColor }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Sentiment breakdown
+            const sentimentBreakdownCtx = document.getElementById('sentimentBreakdown');
+            if (sentimentBreakdownCtx) {
+                const categories = ['Elections', 'Government', 'Policy', 'Congress', 'White House'];
+                const sentimentData = categories.map(() => (Math.random() - 0.5) * 2);
+                
+                new Chart(sentimentBreakdownCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: categories,
+                        datasets: [{
+                            label: 'Sentiment Score',
+                            data: sentimentData,
+                            backgroundColor: sentimentData.map(score => 
+                                score > 0 ? '#22c55e' : score < 0 ? '#ef4444' : '#6b7280'
+                            ),
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: -1,
+                                max: 1,
+                                ticks: { color: textColor },
+                                grid: { color: gridColor }
+                            },
+                            x: {
+                                ticks: { color: textColor },
+                                grid: { color: gridColor }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: textColor }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Sentiment trend over time
+            const sentimentTrendCtx = document.getElementById('sentimentTrend');
+            if (sentimentTrendCtx) {
+                const hours = [];
+                const sentimentOverTime = [];
+                
+                for (let i = 23; i >= 0; i--) {
+                    const hour = new Date(Date.now() - i * 60 * 60 * 1000);
+                    hours.push(hour.getHours() + ':00');
+                    sentimentOverTime.push((Math.random() - 0.5) * 0.8);
+                }
+                
+                new Chart(sentimentTrendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: hours,
+                        datasets: [{
+                            label: 'Overall Sentiment',
+                            data: sentimentOverTime,
+                            borderColor: '#1FB8CD',
+                            backgroundColor: 'rgba(31, 184, 205, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: -1,
+                                max: 1,
+                                ticks: { color: textColor },
+                                grid: { color: gridColor }
+                            },
+                            x: {
+                                ticks: { color: textColor },
+                                grid: { color: gridColor }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: textColor }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Alert configuration
+        function updateThreshold() {
+            const slider = document.getElementById('trendThreshold');
+            const display = document.getElementById('thresholdValue');
+            display.textContent = slider.value;
+        }
+
+        function testEmailAlert() {
+            const email = document.getElementById('alertEmail').value;
+            
+            // Create test alert
+            const testAlert = {
+                id: Date.now(),
+                topic: 'Test Political Trend Alert',
+                email: email,
+                score: 15000,
+                timestamp: new Date().toISOString()
+            };
+            
+            appState.alerts.unshift(testAlert);
+            saveDataToStorage();
+            renderAlerts();
+            renderAlertHistory();
+            
+            alert(`Test alert created! In production, this would send an email to ${email}`);
+        }
+
+        function saveAlertSettings() {
+            const settings = {
+                email: document.getElementById('alertEmail').value,
+                threshold: document.getElementById('trendThreshold').value,
+                frequency: document.getElementById('alertFrequency').value,
+                categories: Array.from(document.querySelectorAll('#alertCategories input:checked')).map(cb => cb.id.replace('cat-', ''))
+            };
+            
+            // In a real app, this would save to a backend
+            alert('Alert settings saved! (Demo mode - settings stored locally)');
+        }
+
+        // Manual trend entry
+        function addManualTrend() {
+            const topic = document.getElementById('manualTopic').value;
+            const hashtags = document.getElementById('manualHashtags').value.split(',').map(h => h.trim());
+            const score = parseInt(document.getElementById('manualScore').value);
+            const category = document.getElementById('manualCategory').value;
+            const context = document.getElementById('manualContext').value;
+            
+            if (!topic || !score || !context) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const newTrend = {
+                id: Date.now(),
+                topic,
+                hashtags,
+                timestamp: new Date().toISOString(),
+                trend_score: score,
+                sentiment: (Math.random() - 0.5) * 1.5, // Random sentiment for demo
+                sentiment_label: 'Manual Entry',
+                duration_minutes: Math.floor(Math.random() * 300) + 60,
+                context,
+                category
+            };
+            
+            appState.trends.unshift(newTrend);
+            saveDataToStorage();
+            renderTrends();
+            renderTimeline();
+            
+            // Clear form
+            document.getElementById('manualTopic').value = '';
+            document.getElementById('manualHashtags').value = '';
+            document.getElementById('manualScore').value = '';
+            document.getElementById('manualContext').value = '';
+            
+            alert('Manual trend added successfully!');
+        }
+
+        // Data management
+        function exportData() {
+            const data = {
+                trends: appState.trends,
+                alerts: appState.alerts,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `political-trends-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportCode() {
+            // This would export the HTML/CSS/JS files in a real implementation
+            alert('Code export feature would package all application files for GitHub deployment. Use BuildShip or manual deployment for production.');
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.trends) {
+                        appState.trends = data.trends;
+                        renderTrends();
+                        renderTimeline();
+                    }
+                    if (data.alerts) {
+                        appState.alerts = data.alerts;
+                        renderAlerts();
+                    }
+                    saveDataToStorage();
+                    alert('Data imported successfully!');
+                } catch (error) {
+                    alert('Error importing data. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                appState.trends = [...mockTrends];
+                appState.alerts = [];
+                saveDataToStorage();
+                renderTrends();
+                renderTimeline();
+                renderAlerts();
+                alert('All data cleared. Reset to demo data.');
+            }
+        }
+
+        function exportTrendData(trendId) {
+            const trend = appState.trends.find(t => t.id === trendId);
+            if (!trend) return;
+            
+            const blob = new Blob([JSON.stringify(trend, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `trend-${trend.topic.replace(/\s+/g, '-')}-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Simulate real-time updates
+        function simulateRealTimeUpdate() {
+            // Add a new simulated trend occasionally
+            if (Math.random() < 0.3) {
+                const topics = [
+                    'Congressional Vote Results',
+                    'Political Rally Updates',
+                    'Policy Announcement',
+                    'Legislative Committee Meeting',
+                    'Campaign Finance Report'
+                ];
+                
+                const categories = ['Government', 'Elections', 'Policy', 'Congress'];
+                const topic = topics[Math.floor(Math.random() * topics.length)];
+                
+                const newTrend = {
+                    id: Date.now(),
+                    topic,
+                    hashtags: [`#${topic.replace(/\s/g, '')}`, '#Politics', '#USNews'],
+                    timestamp: new Date().toISOString(),
+                    trend_score: Math.floor(Math.random() * 15000) + 5000,
+                    sentiment: (Math.random() - 0.5) * 1.2,
+                    sentiment_label: 'Auto-detected',
+                    duration_minutes: Math.floor(Math.random() * 120) + 30,
+                    context: `Simulated trend update for ${topic} showing increased political discussion and engagement.`,
+                    category: categories[Math.floor(Math.random() * categories.length)]
+                };
+                
+                appState.trends.unshift(newTrend);
+                
+                // Check if it should trigger an alert
+                const threshold = parseInt(document.getElementById('trendThreshold')?.value || 8000);
+                if (newTrend.trend_score > threshold) {
+                    const alert = {
+                        id: Date.now(),
+                        topic: newTrend.topic,
+                        email: document.getElementById('alertEmail')?.value || 'doterra2livewell@gmail.com',
+                        score: newTrend.trend_score,
+                        timestamp: new Date().toISOString()
+                    };
+                    appState.alerts.unshift(alert);
+                    renderAlerts();
+                }
+                
+                renderTrends();
+                renderTimeline();
+                saveDataToStorage();
+            }
+        }
+
+        // Keyboard shortcuts
+        function handleKeyboardShortcuts(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (event.key) {
+                    case 's':
+                        event.preventDefault();
+                        openSettings();
+                        break;
+                    case 'e':
+                        event.preventDefault();
+                        exportData();
+                        break;
+                    case '/':
+                        event.preventDefault();
+                        document.getElementById('searchInput')?.focus();
+                        break;
+                }
+            }
+            
+            if (event.key === 'Escape') {
+                closeTrendModal();
+                closeSettings();
+            }
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+            renderAlertHistory();
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('trendModal');
+            if (event.target === modal) {
+                closeTrendModal();
+            }
+        });
+    </script>
+</body>
+</html>

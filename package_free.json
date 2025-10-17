@@ -1,0 +1,43 @@
+{
+  "name": "political-trends-tracker-free",
+  "version": "2.0.0",
+  "description": "FREE Political Trends Tracker - Scrapes us.trend-calendar.com instead of expensive X API",
+  "main": "scraper_backend.js",
+  "scripts": {
+    "start": "node scraper_backend.js",
+    "dev": "nodemon scraper_backend.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_USERNAME/political-trends-tracker.git"
+  },
+  "keywords": [
+    "twitter",
+    "x",
+    "trends",
+    "politics",
+    "scraping",
+    "free",
+    "timeline",
+    "duration-tracking",
+    "email-alerts"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
+    "nodemailer": "^6.9.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
