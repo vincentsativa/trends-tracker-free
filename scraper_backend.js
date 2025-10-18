@@ -1,3 +1,4 @@
+// Test sync
 /**
  * Political Trends Tracker - FREE VERSION
  * Scrapes us.trend-calendar.com instead of using expensive X API
